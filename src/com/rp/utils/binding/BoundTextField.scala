@@ -54,7 +54,7 @@ class BoundTextComponent(t: TextComponent) extends Reactor {
 		}
 	}
 	
-	def bind(b: BoundProperty[String]) = {
+	def <=>(b: BoundProperty[String]) = {
 		textProperty.bind(b)
 		textComponent
 	}
