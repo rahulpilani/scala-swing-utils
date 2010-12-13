@@ -25,7 +25,7 @@ import javax.swing.text._
 
 class BoundTextComponent(t: TextComponent) extends Reactor {
 	val textProperty = new BoundProperty[String]
-	
+	val textComponent = t
 	listenTo(t, textProperty)
 	reactions += {
 		case ValueChanged(s) => {
@@ -56,6 +56,7 @@ class BoundTextComponent(t: TextComponent) extends Reactor {
 	
 	def bind(b: BoundProperty[String]) = {
 		textProperty.bind(b)
+		textComponent
 	}
 }
 
