@@ -64,7 +64,7 @@ class BoundProperty[T] extends Publisher {
 		this
 	}
 	
-	def :=(newProperty: BoundProperty[T]): BoundProperty[T] = {
+	def ->(newProperty: BoundProperty[T]): BoundProperty[T] = {
 		this -> newProperty.value
 	}
 }
