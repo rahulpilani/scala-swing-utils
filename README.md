@@ -8,19 +8,23 @@ Binding requires a property of an object bound to a Swing component. For now, ju
 For e.g.:
 
 
+	import swing._
 	import com.rp.utils.binding.BoundProperty
 	import com.rp.utils.binding.BoundTextComponent._
-
-	object BindingExample extends SwingApplication {
-		def top = new MainFrame {
-			title = "Binding Example"
-			val boundProperty = new BoundProperty[String]
-			val textFieldA = new TextField
-			val textFieldB = new TextField
-    
-			textFieldA.bind(boundProperty)
-			textFieldB.bind(boundProperty)
-			add(textFieldA)
-			add(textFieldB)
-		}
+	
+	object BindingExample extends SimpleSwingApplication {
+	    def top = new MainFrame {
+	        title = "Binding Example"
+	        val boundProperty = new BoundProperty[String]
+	        val textFieldA = new TextField
+	        val textFieldB = new TextField
+	
+	        textFieldA.bind(boundProperty)
+	        textFieldB.bind(boundProperty)
+	        contents = new GridPanel(2, 1) {
+	        	contents += textFieldA
+	        	contents += textFieldB
+	        }
+	        
+	    }
 	}
