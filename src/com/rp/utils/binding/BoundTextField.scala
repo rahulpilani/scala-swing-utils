@@ -1,0 +1,50 @@
+package com.rp.utils.binding
+
+import swing._
+import swing.event._
+import java.awt.event._
+import java.beans._
+import com.rp.utils.SwingUtils._
+import javax.swing.event._
+import javax.swing.text._
+
+class BoundTextComponent(t: TextComponent) extends Reactor {
+	val textProperty = new BoundProperty[String]
+	
+	listenTo(t, textProperty)
+	reactions += {
+		case ValueChanged(s) => {
+			val changedText = s.asInstanceOf[TextComponent].text
+			if (!textProperty.value.getOrElse("").equals(changedText)) {
+				textProperty -> changedText
+			}
+		}
+		case v: ValueUpdated[String] => {
+			if (!v.newValue.getOrElse("").equals(t.text))
+			{
+				invokeLater(() => {
+					//Instead of straightforward t.text = v.newValue.getOrElse(""), 
+					//We have to do this convoluted way, because of the way setText works.
+					//It first calls the remove and then the insertString.
+					//The remove unnecessarily fires another ValueChanged event, which causes
+					//All other updates to be ignored.
+					
+					val len = if (t.text != null) t.text.size else 0
+					deafTo(t)
+					t.peer.getDocument.remove(0, len)
+					listenTo(t)
+					t.peer.getDocument.insertString(0, v.newValue.getOrElse(""), null)
+				})
+			}
+		}
+	}
+	
+	def bind(b: BoundProperty[String]) = {
+		textProperty.bind(b)
+	}
+}
+
+
+object BoundTextComponent {
+	implicit def JTextComponent2BoundTextComponent(tc: TextComponent) = new BoundTextComponent(tc)
+}
