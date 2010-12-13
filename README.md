@@ -16,14 +16,10 @@ For e.g.:
 	    def top = new MainFrame {
 	        title = "Binding Example"
 	        val boundProperty = new BoundProperty[String]
-	        val textFieldA = new TextField
-	        val textFieldB = new TextField
-	
-	        textFieldA.bind(boundProperty)
-	        textFieldB.bind(boundProperty)
+	        
 	        contents = new GridPanel(2, 1) {
-	        	contents += textFieldA
-	        	contents += textFieldB
+	        	contents += new TextField bind boundProperty
+	        	contents += new TextField bind boundProperty
 	        }
 	        
 	    }
