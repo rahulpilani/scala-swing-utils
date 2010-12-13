@@ -10,8 +10,8 @@ object BindingExample extends SimpleSwingApplication {
         val boundProperty = new BoundProperty[String]
         
         contents = new GridPanel(2, 1) {
-        	contents += new TextField bind boundProperty
-        	contents += new TextField bind boundProperty
+        	contents += new TextField <=> boundProperty
+        	contents += new TextField <=> boundProperty
         }
         
     }
