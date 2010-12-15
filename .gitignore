@@ -9,3 +9,4 @@ Thumbs.db
 ###################
 *.class
 .scala_dependencies
+target/
