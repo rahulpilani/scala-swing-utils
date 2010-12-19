@@ -19,10 +19,10 @@ import swing._
 import com.rp.utils.SwingUtils._
 
 class BoundLabel(val label: Label) extends Reactor {
-	val textProperty = new BoundProperty[String]
+	val textProperty = new Model[String]
 	listenTo(textProperty)
 	reactions += {
-		case v: ValueUpdated[String] => {
+		case v: ModelUpdated[String] => {
 			invokeLater(() => {
 				label.text = v.newValue.getOrElse("")
 			})
@@ -31,7 +31,7 @@ class BoundLabel(val label: Label) extends Reactor {
 		
 	}
 	
-	def <=>(b: BoundProperty[String]) = {
+	def <=>(b: Model[String]) = {
 		textProperty.bind(b)
 		label
 	}

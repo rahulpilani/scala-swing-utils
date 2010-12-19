@@ -24,7 +24,7 @@ import javax.swing.event._
 import javax.swing.text._
 
 class BoundTextComponent(t: TextComponent) extends Reactor {
-	val textProperty = new BoundProperty[String]
+	val textProperty = new Model[String]
 	val textComponent = t
 	listenTo(t, textProperty)
 	reactions += {
@@ -34,7 +34,7 @@ class BoundTextComponent(t: TextComponent) extends Reactor {
 				textProperty -> changedText
 			}
 		}
-		case v: ValueUpdated[String] => {
+		case v: ModelUpdated[String] => {
 			if (!v.newValue.getOrElse("").equals(t.text))
 			{
 				invokeLater(() => {
@@ -54,7 +54,7 @@ class BoundTextComponent(t: TextComponent) extends Reactor {
 		}
 	}
 	
-	def <=>(b: BoundProperty[String]) = {
+	def <=>(b: Model[String]) = {
 		textProperty.bind(b)
 		textComponent
 	}
@@ -62,5 +62,5 @@ class BoundTextComponent(t: TextComponent) extends Reactor {
 
 
 object BoundTextComponent {
-	implicit def JTextComponent2BoundTextComponent(tc: TextComponent) = new BoundTextComponent(tc)
+	implicit def convertToBoundTextComponent(tc: TextComponent) = new BoundTextComponent(tc)
 }

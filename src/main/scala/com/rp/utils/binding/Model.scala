@@ -19,16 +19,18 @@ import swing._
 import event._
 import com.rp.utils.SwingUtils._
 
-object ValueUpdated {
-  def unapply [X] (a: ValueUpdated[X]): (Option[X], BoundProperty[X]) = (a.newValue, a.source)
+object ModelUpdated {
+  def unapply [X] (a: ModelUpdated[X]): (Option[X], Model[X]) = (a.newValue, a.source)
 }
 
-class ValueUpdated[X](val newValue: Option[X], val source: BoundProperty[X]) extends Event
+class ModelUpdated[X](val newValue: Option[X], val source: Model[X]) extends Event
 
-class BoundProperty[T] extends Publisher {
-	var value: Option[T] = None
-		
-	def bind(other: BoundProperty[T])
+class Model[T] extends Publisher {
+	var v: Option[T] = None
+	def value_= (other: Option[T]): Unit = v = other
+	def value: Option[T] = v
+	
+	def bind(other: Model[T])
 	{
 		this.listenTo(other)
 		other.listenTo(this)
@@ -36,17 +38,17 @@ class BoundProperty[T] extends Publisher {
 	}
 	
 	reactions += {
-		case v: ValueUpdated[T] => {
+		case v: ModelUpdated[T] => {
 			val o: Option[T] = v.newValue
 			
-			if (this != v.source && !o.getOrElse("").equals(value.getOrElse("")))
+			if (this != v.source && !o.getOrElse("").equals(this.value.getOrElse("")))
 			{
 				this -> o
 			}
 		}
 	}
 
-	def ->(newValue: T): BoundProperty[T] = {
+	def ->(newValue: T): Model[T] = {
 		val option: Option[T] = newValue match {
 			case null => None
 			case "" => None
@@ -57,14 +59,14 @@ class BoundProperty[T] extends Publisher {
 		this -> option
 	}
 	
-	def ->(newValue: Option[T]): BoundProperty[T] = {
+	def ->(newValue: Option[T]): Model[T] = {
 		val oldValue = value
-		value = newValue 
-		publish(new ValueUpdated(newValue, this))
+		value_=(newValue) 
+		publish(new ModelUpdated(newValue, this))
 		this
 	}
 	
-	def ->(newProperty: BoundProperty[T]): BoundProperty[T] = {
+	def ->(newProperty: Model[T]): Model[T] = {
 		this -> newProperty.value
 	}
 }
